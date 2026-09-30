@@ -1,7 +1,10 @@
 <?php
     if(!empty($_REQUEST['valid'])) {
-        Auth::getInstance()->subscribe($_REQUEST['login'], $_REQUEST['pwd']);
-        echo '<p>Inscription réalisée avec succès !</p>';
+        if(Auth::getInstance()->subscribe($_REQUEST['login'], $_REQUEST['pwd'])) {
+            echo '<p>Inscription réalisée avec succès !</p>';
+        } else {
+            echo '<p>Ce login est déjà utilisé.</p>';
+        }
     }
 ?><form method="post">
     <div>
@@ -16,7 +19,7 @@
         </p>
         <p>
             <label>
-                Login
+                Password
                 <input type="password"
                        required="required"
                        name="pwd" />

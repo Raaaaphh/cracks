@@ -16,10 +16,24 @@ class Auth {
         }
     }
     
-    public function subscribe($login, $pwd) {
+    public function subscribe($login, $pwd): bool {
         global $db;
-        $q = 'insert into users values(null, "'.addslashes($login).'", "'.md5($pwd).'", 0)';
-        $db->query($q);
+        $q = 'insert into users(login, pwd, isadmin) values(:login, :pwd, 0)';
+        $stmt = $db->prepare($q);
+        $stmt->bindParam(':login', $login);
+        $pwdHash = hash('sha256', $pwd);
+        $stmt->bindParam(':pwd', $pwdHash);
+        try {
+            $stmt->execute();
+            return true;
+        } catch (PDOException $exception) {
+            $query = 'select * from users where login="'.$login.'"';
+            $ls = $db->query($query, PDO::FETCH_ASSOC);
+            if(!empty($ls)) {
+                return false;
+            }
+            throw $exception;
+        }
     }
     
     public function tryLog($login, $pwd): bool {
