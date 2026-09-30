@@ -38,13 +38,12 @@ class Auth {
     
     public function tryLog($login, $pwd): bool {
         global $db;
-        $q = 'select * from users where login="'.$login.'" and pwd="'.md5($pwd).'"';
-        $found = null;
-        $ls = $db->query($q, PDO::FETCH_ASSOC);
-        if(!empty($ls)) {
-            foreach($ls as $l) { $found = $l; }
-        }
-        if($found) {
+        $q = 'select * from users where login=:login';
+        $stmt = $db->prepare($q);
+        $stmt->bindParam(':login', $login);
+        $stmt->execute();
+        $found = $stmt->fetch(PDO::FETCH_ASSOC);
+        if($found && $found['pwd'] === hash('sha256', $pwd)) {
             $this->log($found['id']);
             return true;
         } else {
