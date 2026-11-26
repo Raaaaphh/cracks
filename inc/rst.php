@@ -12,8 +12,6 @@
                    onpaste="return false;" />
         </p>
         <input type="hidden" name="inc" value="rst" />
-        <input type="hidden" name="id" value="<?php echo $_REQUEST['id']; ?>" />
-        <input type="hidden" name="code" value="<?php echo $_REQUEST['code']; ?>" />
         <input type="submit" name="change" value="Valider le changement de mot de passe !" />
     </div>
 </form>

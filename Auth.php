@@ -75,7 +75,11 @@ class Auth {
     
     public function resetPwd($id, $code, $newPwd) {
         global $db;
-        $q = 'update users set pwd="'.md5($newPwd).'" where id="'.$id.'" and pwd="'.$code.'"';
-        $db->query($q);
+        $q = 'update users set pwd=:newPwd where id=:id and pwd=:code';
+        $stmt = $db->prepare($q);
+        $stmt->bindParam(':newPwd', hash('sha256', $newPwd));
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':code', $code);
+        $stmt->execute();
     }
 }
